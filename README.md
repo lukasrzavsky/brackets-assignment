@@ -11,7 +11,7 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    ```
 
 2. Set env variables
-   There is a need to set NEXT_PUBLIC_API_BASE_URL with API url   
+   There is a need to set EXPO_PUBLIC_API_URL with API url   
 
 3. Start the app
 
