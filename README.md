@@ -18,3 +18,7 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    ```bash
    npx expo start
    ```
+
+## App issues
+
+There is a problem with images when using filtering or search. Since we don't get the image from the API response, but only get it from the hardcoded url based on the item id, when the list order is changed the images don't match. The solution would be to retrieve the images from the endpoint.
