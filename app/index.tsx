@@ -6,17 +6,32 @@ import { PersonItem } from '@/components/personItem/PersonItem';
 import { useGetPeople } from '@/hooks/useGetPeople';
 import { FlashList } from '@shopify/flash-list';
 import { useMemo } from 'react';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, RefreshControl } from 'react-native';
 
 const LIST_ITEM_SIZE = 386;
 
 const Index = () => {
-  const { data, isLoading, isError, isFetchingNextPage } = useGetPeople();
+  const {
+    data,
+    isFetching,
+    isLoading,
+    isError,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+    refetch
+  } = useGetPeople();
 
   const people = useMemo(
     () => data?.pages?.flatMap(({ results }) => results ?? []) ?? [],
     [data?.pages]
   );
+
+  const onEndReached = async () => {
+    if (!isFetching && hasNextPage) {
+      await fetchNextPage();
+    }
+  };
 
   if (isError) {
     return <Error error='Failed to fetch people' />;
@@ -34,12 +49,19 @@ const Index = () => {
           )}
           keyExtractor={item => item.name}
           showsVerticalScrollIndicator={false}
+          onEndReached={onEndReached}
           estimatedItemSize={LIST_ITEM_SIZE}
           ListEmptyComponent={ListEmptyPlaceholder}
           ListFooterComponent={
             isFetchingNextPage ? <ActivityIndicator size='large' /> : undefined
           }
           contentContainerClassName='pb-[30px]'
+          refreshControl={
+            <RefreshControl
+              refreshing={isFetching && !isFetchingNextPage}
+              onRefresh={refetch}
+            />
+          }
         />
       )}
     </Layout>
